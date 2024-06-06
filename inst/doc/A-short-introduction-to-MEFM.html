@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>A-short-introduction-to-MEFM</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">A-short-introduction-to-MEFM</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MEFM)</span></code></pre></div>
+<div id="model-generation-and-estimation" class="section level1">
+<h1>1. Model generation and estimation</h1>
+<p>In ‘MEFM’, we mainly consider a main effect matrix factor model
+(MEFM) such that for any time <span class="math inline">\(t\in[T]\)</span>, <span class="math display">\[
+\mathbf{Y}_t = \mu_t \mathbf{1}_p \mathbf{1}_q^\top +
+\boldsymbol{\alpha}_t \mathbf{1}_q^\top + \mathbf{1}_p
+\boldsymbol{\beta}_t^\top + \mathbf{A}_r \mathbf{F}_t \mathbf{A}_c^\top
++ \mathbf{E}_t ,
+\]</span> where <span class="math inline">\(\mathbf{Y}_t\)</span> is an
+observation of dimension <span class="math inline">\(p\times q\)</span>,
+<span class="math inline">\(\mu_t\)</span> is a scalar representing the
+time-varying grand mean, <span class="math inline">\(\boldsymbol{\alpha}_t \in \mathbb{R}^p\)</span> is
+the time-varying row effect, <span class="math inline">\(\boldsymbol{\beta}_t \in \mathbb{R}^q\)</span> is
+the time-varying column effect, <span class="math inline">\(\mathbf{E}_t\)</span> is the noise matrix with the
+same dimension as the observation, and <span class="math inline">\(\mathbf{A}_r \mathbf{F}_t
+\mathbf{A}_c^\top\)</span> is the common component in tradition factor
+models with <span class="math inline">\(\mathbf{A}_r \in
+\mathbb{R}^{p\times k_r}\)</span>, <span class="math inline">\(\mathbf{A}_c \in \mathbb{R}^{q\times
+k_c}\)</span>, <span class="math inline">\(\mathbf{F}_t \in
+\mathbb{R}^{k_r \times k_c}\)</span> being the row loading, column
+loading and core factors, respectively.<br />
+<br />
+We may simulate such model series by using the base class ‘array’ in R.
+An example data is generated using the ‘gen_MEFM’ function below. For
+details of the data generation mechanism, see <span class="citation">Lam
+and Cen (2024)</span>. For reproducibility, a seed parameter is
+required, which is 2024 by default.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>TT <span class="ot">&lt;-</span> <span class="dv">60</span> <span class="co">#time length</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">60</span>,<span class="dv">60</span>) <span class="co">#spatial dimensions</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>) <span class="co">#rank of core tensor</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>re <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>) <span class="co">#rank of common component in error</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>eta <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="co">#strong factors</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>coef_f <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.7</span>, <span class="fl">0.3</span>, <span class="sc">-</span><span class="fl">0.4</span>, <span class="fl">0.2</span>, <span class="sc">-</span><span class="fl">0.1</span>) <span class="co">#AR(5) coefficients for core factor</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>coef_fe <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.7</span>, <span class="sc">-</span><span class="fl">0.3</span>, <span class="sc">-</span><span class="fl">0.4</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>) <span class="co">#AR(5) coefficients for common component in error</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>coef_e <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.8</span>, <span class="fl">0.4</span>, <span class="sc">-</span><span class="fl">0.4</span>, <span class="fl">0.2</span>, <span class="sc">-</span><span class="fl">0.1</span>) <span class="co">#AR(5) coefficients for idiosyncratic part in error</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>param_mu <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>) <span class="co">#Normal mean and variance for mu</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>param_alpha <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>) <span class="co">#Normal mean and variance for alpha</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>param_beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>) <span class="co">#Normal mean and variance for beta</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>data_example <span class="ot">&lt;-</span> <span class="fu">gen_MEFM</span>(TT,d,r,re,eta, coef_f, coef_fe, coef_e, param_mu, param_alpha, param_beta)</span></code></pre></div>
+<p>With the ‘est_MEFM’ function, the factor structure can be estimated
+in one go. The number of factors could be either provided or not
+provided, in the latter case the function estimates the number of
+factors using the eigenvalue-ratio-based estimator. For the details of
+estimation, see <span class="citation">Lam and Cen (2024)</span>. As an
+example, we show the estimated number of factors and also the estimation
+error.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>est_result <span class="ot">&lt;-</span> <span class="fu">est_MEFM</span>(data_example<span class="sc">$</span>MEFM)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;Estimated number of factors: &#39;</span>, est_result<span class="sc">$</span>r[<span class="dv">1</span>], <span class="st">&#39;, &#39;</span>, est_result<span class="sc">$</span>r[<span class="dv">2</span>])</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Estimated number of factors: 2, 2&quot;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;Estimation error for mu: &#39;</span>, <span class="fu">sum</span>((est_result<span class="sc">$</span>mu <span class="sc">-</span> data_example<span class="sc">$</span>mu)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>TT)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Estimation error for mu: 0.000204405935075275&quot;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;Estimation error for alpha: &#39;</span>, <span class="fu">sum</span>((est_result<span class="sc">$</span>alpha <span class="sc">-</span> data_example<span class="sc">$</span>alpha)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">prod</span>(<span class="fu">dim</span>(data_example<span class="sc">$</span>alpha)))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Estimation error for alpha: 0.0183163947105022&quot;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;Estimation error for beta: &#39;</span>, <span class="fu">sum</span>((est_result<span class="sc">$</span>beta <span class="sc">-</span> data_example<span class="sc">$</span>beta)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">prod</span>(<span class="fu">dim</span>(data_example<span class="sc">$</span>beta)))</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Estimation error for beta: 0.0169548243336111&quot;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;Estimation error for row factor loading: &#39;</span>, tensorMiss<span class="sc">::</span><span class="fu">fle</span>(est_result<span class="sc">$</span>A[[<span class="dv">1</span>]], data_example<span class="sc">$</span>A[[<span class="dv">1</span>]]))</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Estimation error for row factor loading: 0.0220912835157286&quot;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;Estimation error for column factor loading: &#39;</span>, tensorMiss<span class="sc">::</span><span class="fu">fle</span>(est_result<span class="sc">$</span>A[[<span class="dv">2</span>]], data_example<span class="sc">$</span>A[[<span class="dv">2</span>]]))</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Estimation error for column factor loading: 0.0212000969244649&quot;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;Estimation error for Yt: &#39;</span>, <span class="fu">sum</span>((est_result<span class="sc">$</span>Yt <span class="sc">-</span> (data_example<span class="sc">$</span>MEFM <span class="sc">-</span> data_example<span class="sc">$</span>E) )<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">prod</span>(<span class="fu">dim</span>(est_result<span class="sc">$</span>Yt)))</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Estimation error for Yt: 0.040113558882167&quot;</span></span></code></pre></div>
+</div>
+<div id="asymptotic-normality-of-grand-mean-and-main-effect-estimators" class="section level1">
+<h1>2. Asymptotic normality of grand mean and main effect
+estimators</h1>
+<p>We illustrate below how to perform testing on <span class="math inline">\(\mu_t\)</span>, <span class="math inline">\(\boldsymbol{\alpha}_t\)</span> and <span class="math inline">\(\boldsymbol{\beta}_t\)</span> using the asymptotic
+normality of the estimated parameters. First, consider testing <span class="math inline">\(\mathcal{H}_0: \mu_{10} = \text{-}1.15\)</span>
+over <span class="math inline">\(\mathcal{H}_1: \mu_{10} \neq
+\text{-}1.15\)</span>, we construct the test statistic as the
+following.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>time_select <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="co">#select a time point</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>hat.E <span class="ot">&lt;-</span> (est_result<span class="sc">$</span>Yt <span class="sc">-</span> data_example<span class="sc">$</span>MEFM)[time_select,,]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>gamma_mu <span class="ot">&lt;-</span> <span class="fu">make_gamma</span>(hat.E, <span class="at">type =</span> <span class="st">&#39;mu&#39;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>asymp_i <span class="ot">&lt;-</span> <span class="fu">prod</span>(d)<span class="sc">^</span><span class="fl">0.5</span> <span class="sc">*</span> gamma_mu<span class="sc">^</span>(<span class="sc">-</span><span class="dv">1</span>) <span class="sc">*</span> (est_result<span class="sc">$</span>mu[time_select] <span class="sc">-</span> (<span class="sc">-</span><span class="fl">1.15</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;The true mu at time 10 is: &#39;</span>, data_example<span class="sc">$</span>mu[time_select])</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;The true mu at time 10 is: -1.12135130216029&quot;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;The test statistic is: &#39;</span>, asymp_i )</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;The test statistic is: 2.22064506054644&quot;</span></span></code></pre></div>
+<p>As the test statistic is outside of <span class="math inline">\([\text{-}1.96, 1.96]\)</span>, we reject the null
+hypothesis under <span class="math inline">\(5\%\)</span> significance
+level. For <span class="math inline">\(\boldsymbol{\alpha}_t\)</span>
+and <span class="math inline">\(\boldsymbol{\beta}_t\)</span>, we only
+demonstrate their asymptotic normality here. Consider the first three
+entries at time <span class="math inline">\(t=10\)</span>, we have</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>gamma_alpha_inv <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow=</span><span class="dv">3</span>, <span class="at">ncol=</span><span class="dv">3</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){ gamma_alpha_inv[j,j] <span class="ot">&lt;-</span> (<span class="fu">make_gamma</span>(hat.E, <span class="at">type =</span> <span class="st">&#39;alpha&#39;</span>, j))<span class="sc">^</span>(<span class="sc">-</span><span class="dv">1</span>) }</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>asymp_alpha_example <span class="ot">&lt;-</span> (d[<span class="dv">2</span>])<span class="sc">^</span><span class="fl">0.5</span> <span class="sc">*</span> gamma_alpha_inv <span class="sc">%*%</span> (est_result<span class="sc">$</span>alpha[time_select, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="sc">-</span> data_example<span class="sc">$</span>alpha[time_select, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>gamma_beta_inv <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow=</span><span class="dv">3</span>, <span class="at">ncol=</span><span class="dv">3</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){ gamma_beta_inv[j,j] <span class="ot">&lt;-</span> (<span class="fu">make_gamma</span>(hat.E, <span class="at">type =</span> <span class="st">&#39;beta&#39;</span>, j))<span class="sc">^</span>(<span class="sc">-</span><span class="dv">1</span>) }</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>asymp_beta_example <span class="ot">&lt;-</span> (d[<span class="dv">1</span>])<span class="sc">^</span><span class="fl">0.5</span> <span class="sc">*</span> gamma_beta_inv <span class="sc">%*%</span> (est_result<span class="sc">$</span>beta[time_select, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="sc">-</span> data_example<span class="sc">$</span>beta[time_select, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>])</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;The test statistic using true alpha: &#39;</span>, asymp_alpha_example[<span class="dv">1</span>], <span class="st">&#39;, &#39;</span>, asymp_alpha_example[<span class="dv">2</span>], <span class="st">&#39;, &#39;</span>, asymp_alpha_example[<span class="dv">3</span>])</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;The test statistic using true alpha: -1.10145252408513, 0.914153410430621, 0.425092850778305&quot;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;The test statistic using true beta: &#39;</span>, asymp_beta_example[<span class="dv">1</span>], <span class="st">&#39;, &#39;</span>, asymp_beta_example[<span class="dv">2</span>], <span class="st">&#39;, &#39;</span>, asymp_beta_example[<span class="dv">3</span>])</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;The test statistic using true beta: 0.531048546382394, -0.354637264024393, 0.684069398353172&quot;</span></span></code></pre></div>
+</div>
+<div id="asymptotic-normality-of-estimated-loading-matrix-rows" class="section level1">
+<h1>3. Asymptotic normality of estimated loading matrix rows</h1>
+<p>Under certain conditions <span class="citation">(Lam and Cen
+2024)</span>, the residue between the row of the estimated loading
+matrix and its corresponding true row under some rotation can be shown
+to be asymptotically normal. A consistent covariance matrix estimator
+can be computed by the ‘sigmaD_MEFM’ function. For instance, to compute
+the residue on the first row of the estimated column loading matrix, the
+covariance matrix estimator is obtained below. The rotation matrix is
+also computed afterwards.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># computing the covariance matrix estimator</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>r2 <span class="ot">&lt;-</span> r[<span class="dv">2</span>]</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>eta <span class="ot">&lt;-</span> <span class="fu">floor</span>(<span class="fl">0.2</span><span class="sc">*</span>((TT <span class="sc">*</span> <span class="fu">prod</span>(d))<span class="sc">^</span><span class="fl">0.25</span>))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>D2 <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="at">x=</span>(<span class="fu">svd</span>(est_result<span class="sc">$</span>covMatrix[[<span class="dv">2</span>]])<span class="sc">$</span>d)[<span class="dv">1</span><span class="sc">:</span>r2], <span class="at">nrow=</span>r2, <span class="at">ncol=</span>r2)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># HAC_cov: HAC-type covariance matrix estimator</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>HAC_cov <span class="ot">&lt;-</span> <span class="fu">sigmaD_MEFM</span>(<span class="dv">2</span>, D2, est_result<span class="sc">$</span>A[[<span class="dv">2</span>]], est_result<span class="sc">$</span>Ct, data_example<span class="sc">$</span>MEFM <span class="sc">-</span> est_result<span class="sc">$</span>Yt, <span class="dv">1</span>, eta)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># computing the rotation matrix</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>A2 <span class="ot">&lt;-</span> data_example<span class="sc">$</span>A[[<span class="dv">2</span>]]</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>Amk_i <span class="ot">&lt;-</span> data_example<span class="sc">$</span>A[[<span class="dv">1</span>]]</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>R_ast_i <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT){</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  R_ast_i <span class="ot">&lt;-</span> R_ast_i <span class="sc">+</span> tensorMiss<span class="sc">::</span><span class="fu">unfold</span>(<span class="fu">matrix</span>(data_example<span class="sc">$</span>Ft[tt,,], <span class="at">ncol=</span>r2),<span class="dv">2</span>) <span class="sc">%*%</span> <span class="fu">t</span>(Amk_i) <span class="sc">%*%</span> Amk_i <span class="sc">%*%</span> <span class="fu">t</span>(tensorMiss<span class="sc">::</span><span class="fu">unfold</span>(<span class="fu">matrix</span>(data_example<span class="sc">$</span>Ft[tt,,], <span class="at">ncol=</span>r2),<span class="dv">2</span>))</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>R_ast_i <span class="ot">&lt;-</span> A2 <span class="sc">%*%</span> R_ast_i <span class="sc">%*%</span> <span class="fu">t</span>(A2)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>R_ast_i <span class="ot">&lt;-</span> R_ast_i<span class="sc">/</span>TT</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>Z2_i <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="at">x =</span> <span class="fu">diag</span>(<span class="fu">t</span>(A2) <span class="sc">%*%</span> A2), <span class="at">nrow=</span>r2, <span class="at">ncol=</span>r2)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>Q2_i <span class="ot">&lt;-</span> A2 <span class="sc">%*%</span> <span class="fu">diag</span>(<span class="at">x=</span><span class="fu">diag</span>(<span class="fu">solve</span>(Z2_i))<span class="sc">^</span><span class="fl">0.5</span>, <span class="at">nrow=</span>r2, <span class="at">ncol=</span>r2)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># H2_i: rotation matrix</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>H2_i <span class="ot">&lt;-</span> <span class="fu">solve</span>(D2) <span class="sc">%*%</span> <span class="fu">t</span>(est_result<span class="sc">$</span>A[[<span class="dv">2</span>]]) <span class="sc">%*%</span> R_ast_i <span class="sc">%*%</span> Q2_i <span class="sc">%*%</span> <span class="fu">solve</span>(<span class="fu">t</span>(Q2_i)<span class="sc">%*%</span> Q2_i)</span></code></pre></div>
+<p>Eventually, the standardised residue is shown below and should follow
+a standard normal distribution when dimensions are increased.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>HAC_cov.eigen <span class="ot">&lt;-</span> <span class="fu">eigen</span>(HAC_cov)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>HAC_cov.sqrt <span class="ot">&lt;-</span> HAC_cov.eigen<span class="sc">$</span>vectors <span class="sc">%*%</span> <span class="fu">diag</span>(<span class="fu">sqrt</span>(HAC_cov.eigen<span class="sc">$</span>values)) <span class="sc">%*%</span> <span class="fu">solve</span>(HAC_cov.eigen<span class="sc">$</span>vectors)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>A2_1 <span class="ot">&lt;-</span> TT <span class="sc">*</span> (<span class="fu">solve</span>(HAC_cov.sqrt) <span class="sc">%*%</span> D2) <span class="sc">%*%</span> (<span class="fu">matrix</span>(est_result<span class="sc">$</span>A[[<span class="dv">2</span>]], <span class="at">nrow=</span>d[<span class="dv">2</span>], <span class="at">ncol=</span>r2)[<span class="dv">1</span>,] <span class="sc">-</span> (H2_i <span class="sc">%*%</span> Q2_i[<span class="dv">1</span>,]))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>A2_1</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            [,1]</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]  0.1819581</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,] -0.5004283</span></span></code></pre></div>
+</div>
+<div id="comparison-with-traditional-factor-models" class="section level1">
+<h1>4. Comparison with traditional factor models</h1>
+<p>This section acts as a toy example on how to test the necessity of
+using MEFM instead of traditional factor models (FM). Before that, if
+the data is indeed generated using FM, we can see that MEFM will not
+make the estimation worse off and actually it is always better to use
+MEFM.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;MSE of estimating MEFM on FM-generated data: &#39;</span>, <span class="fu">sum</span>((<span class="fu">est_MEFM</span>(data_example<span class="sc">$</span>FM)<span class="sc">$</span>Yt <span class="sc">-</span>  data_example<span class="sc">$</span>FM)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>(data_example<span class="sc">$</span>FM<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;MSE of estimating MEFM on FM-generated data: 0.172853133412508&quot;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;MSE of estimating FM on FM-generated data: &#39;</span>, <span class="fu">sum</span>((<span class="fu">est_FM</span>(data_example<span class="sc">$</span>FM)<span class="sc">$</span>Ct <span class="sc">-</span>  data_example<span class="sc">$</span>FM)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>(data_example<span class="sc">$</span>FM<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;MSE of estimating FM on FM-generated data: 0.179171222681373&quot;</span></span></code></pre></div>
+<p>However, if the data has MEFM structure, then estimation based on FM
+is hardly satisfying even if we use much larger number of factors, as
+shown below.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;MSE of estimating MEFM on MEFM-generated data: &#39;</span>, <span class="fu">sum</span>((<span class="fu">est_MEFM</span>(data_example<span class="sc">$</span>MEFM)<span class="sc">$</span>Yt <span class="sc">-</span>  data_example<span class="sc">$</span>MEFM)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>(data_example<span class="sc">$</span>MEFM<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;MSE of estimating MEFM on MEFM-generated data: 0.11303111038302&quot;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;MSE of estimating FM on MEFM-generated data (using number of factors as (3,3)): &#39;</span>, <span class="fu">sum</span>((<span class="fu">est_FM</span>(data_example<span class="sc">$</span>MEFM)<span class="sc">$</span>Ct <span class="sc">-</span>  data_example<span class="sc">$</span>MEFM)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>(data_example<span class="sc">$</span>MEFM<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;MSE of estimating FM on MEFM-generated data (using number of factors as (3,3)): 0.331459654558444&quot;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;MSE of estimating FM on MEFM-generated data (using number of factors as (30,30)): &#39;</span>, <span class="fu">sum</span>((<span class="fu">est_FM</span>(data_example<span class="sc">$</span>MEFM, <span class="at">r=</span><span class="fu">c</span>(<span class="dv">30</span>,<span class="dv">30</span>))<span class="sc">$</span>Ct <span class="sc">-</span>  data_example<span class="sc">$</span>MEFM)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>(data_example<span class="sc">$</span>MEFM<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;MSE of estimating FM on MEFM-generated data (using number of factors as (30,30)): 0.11429915366256&quot;</span></span></code></pre></div>
+<p>It is hence worthy to test if using FM with slightly larger number of
+factors is sufficient. According to <span class="citation">Lam and Cen
+(2024)</span>, we perform testing as follows.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>MEFM_on_MEFM <span class="ot">&lt;-</span> <span class="fu">est_MEFM</span>(data_example<span class="sc">$</span>MEFM)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>FM_on_MEFM <span class="ot">&lt;-</span> <span class="fu">est_FM</span>(data_example<span class="sc">$</span>MEFM, <span class="at">r=</span><span class="fu">c</span>(MEFM_on_MEFM<span class="sc">$</span>r[<span class="dv">1</span>] <span class="sc">+</span><span class="dv">1</span>, MEFM_on_MEFM<span class="sc">$</span>r[<span class="dv">1</span>] <span class="sc">+</span><span class="dv">1</span>))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>x_alpha <span class="ot">&lt;-</span> <span class="fu">make_xy</span>(MEFM_on_MEFM<span class="sc">$</span>Yt <span class="sc">-</span> data_example<span class="sc">$</span>MEFM, <span class="at">type =</span> <span class="st">&#39;alpha&#39;</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>y_alpha <span class="ot">&lt;-</span> <span class="fu">make_xy</span>(FM_on_MEFM<span class="sc">$</span>Ct <span class="sc">-</span> data_example<span class="sc">$</span>MEFM, <span class="at">type =</span> <span class="st">&#39;alpha&#39;</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>x_beta <span class="ot">&lt;-</span> <span class="fu">make_xy</span>(MEFM_on_MEFM<span class="sc">$</span>Yt <span class="sc">-</span> data_example<span class="sc">$</span>MEFM, <span class="at">type =</span> <span class="st">&#39;beta&#39;</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>y_beta <span class="ot">&lt;-</span> <span class="fu">make_xy</span>(FM_on_MEFM<span class="sc">$</span>Ct <span class="sc">-</span> data_example<span class="sc">$</span>MEFM, <span class="at">type =</span> <span class="st">&#39;beta&#39;</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;Computed alpha_reject: &#39;</span>, <span class="fu">sum</span>(y_alpha <span class="sc">&gt;=</span> <span class="fu">qHat</span>(x_alpha, <span class="fl">0.95</span>))<span class="sc">/</span><span class="fu">length</span>(y_alpha))</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Computed alpha_reject: 1&quot;</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&#39;Computed beta_reject: &#39;</span>, <span class="fu">sum</span>(y_beta <span class="sc">&gt;=</span> <span class="fu">qHat</span>(x_beta, <span class="fl">0.95</span>))<span class="sc">/</span><span class="fu">length</span>(y_beta))</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Computed beta_reject: 1&quot;</span></span></code></pre></div>
+<p>We expect the computed <span class="math inline">\(\boldsymbol{\alpha}_\text{reject}\)</span> and
+<span class="math inline">\(\boldsymbol{\beta}_\text{reject}\)</span> to
+be close to <span class="math inline">\(5\%\)</span> if FM is
+sufficient, and clearly it is not in our case.</p>
+<div id="references" class="section level2 unnumbered">
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-LamCen" class="csl-entry">
+Lam, Clifford, and Zetai Cen. 2024. <span>“Matrix-Valued Factor Model
+with Time-Varying Main Effects.”</span>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
